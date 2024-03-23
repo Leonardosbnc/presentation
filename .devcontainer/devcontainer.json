@@ -1,0 +1,12 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/postgres
+{
+  "name": "Python 3 & PostgreSQL",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "forwardPorts": [5432, 8080],
+  "postCreateCommand": "python -m pip install .[dev]",
+  "postStartCommand": "python3 -m uvicorn api.app:app --reload --host 0.0.0.0 --port 8080",
+  "remoteUser": "root"
+}
