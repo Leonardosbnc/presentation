@@ -4,6 +4,7 @@ from sqlmodel import Session, select
 
 from api.db import engine
 from api.models import Info
+from api.enums import Categories
 
 
 def get_default_fields():
@@ -18,23 +19,21 @@ def get_default_fields():
 
 def get_personal_data():
     default_fields = get_default_fields()
+    initial_dict = {e.name: [] for e in list(Categories)}
 
-    query = select(Info)
     with Session(engine) as session:
+        query = select(Info.category, Info.value)
         results = session.exec(query)
 
-    print(list(results))
-    hobbies = []
-    interests = []
-    languages = []
-    programming_languages = []
+        for info in results:
+            initial_dict[Categories(info.category).name].append(info.value)
 
     data = dict(
         **default_fields,
-        hobbies=hobbies,
-        interests=interests,
-        languages=languages,
-        programming_languages=programming_languages,
+        hobbies=initial_dict[Categories.HOBBY.name],
+        interests=initial_dict[Categories.INTEREST.name],
+        languages=initial_dict[Categories.LANGUAGE.name],
+        programming_languages=initial_dict[Categories.PROGRAMMING_LANGUAGE.name],
     )
 
     return data
